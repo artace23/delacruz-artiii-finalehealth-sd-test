@@ -1,0 +1,157 @@
+<div class="summary-container">
+  <div class="header">
+    <div class="header-left">
+      <button class="btn btn-outline" (click)="onBackToPatients()">
+        ← Back to Patients
+      </button>
+      <h1>Summary Report</h1>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading summary data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button class="btn btn-secondary" (click)="loadSummaryData()">Retry</button>
+  </div>
+
+  <!-- Summary Content -->
+  <div *ngIf="!loading && !error" class="summary-content">
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h3>Total Patients</h3>
+          <p class="stat-number">{{ totalPatients }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📋</div>
+        <div class="stat-content">
+          <h3>Total Visits</h3>
+          <p class="stat-number">{{ totalVisits }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🏠</div>
+        <div class="stat-content">
+          <h3>Home Visits</h3>
+          <p class="stat-number">{{ visitTypeStats['Home'] }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">💻</div>
+        <div class="stat-content">
+          <h3>Telehealth</h3>
+          <p class="stat-number">{{ visitTypeStats['Telehealth'] }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">🏥</div>
+        <div class="stat-content">
+          <h3>Clinic Visits</h3>
+          <p class="stat-number">{{ visitTypeStats['Clinic'] }}</p>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">📊</div>
+        <div class="stat-content">
+          <h3>Avg Visits/Patient</h3>
+          <p class="stat-number">{{ totalPatients > 0 ? (totalVisits / totalPatients).toFixed(1) : '0' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Most Active Patients -->
+    <div class="section">
+      <h2>Most Active Patients</h2>
+      <div class="patient-summaries">
+        <div *ngFor="let summary of getMostActivePatients()" class="patient-summary-card">
+          <div class="patient-info">
+            <div class="patient-avatar">
+              {{ summary.patient.firstName.charAt(0) }}{{ summary.patient.lastName.charAt(0) }}
+            </div>
+            <div class="patient-details">
+              <h3>{{ summary.patient.firstName }} {{ summary.patient.lastName }}</h3>
+              <p class="patient-email">{{ summary.patient.email }}</p>
+            </div>
+          </div>
+          
+          <div class="visit-stats">
+            <div class="total-visits">
+              <span class="visit-count">{{ summary.totalVisits }}</span>
+              <span class="visit-label">Total Visits</span>
+            </div>
+            
+            <div class="visit-types">
+              <div class="visit-type-item">
+                <span class="visit-type-badge visit-type-home">
+                  Home
+                </span>
+                <span class="visit-type-count">{{ summary.visitTypes['Home'] }}</span>
+              </div>
+              <div class="visit-type-item">
+                <span class="visit-type-badge visit-type-telehealth">
+                  Telehealth
+                </span>
+                <span class="visit-type-count">{{ summary.visitTypes['Telehealth'] }}</span>
+              </div>
+              <div class="visit-type-item">
+                <span class="visit-type-badge visit-type-clinic">
+                  Clinic
+                </span>
+                <span class="visit-type-count">{{ summary.visitTypes['Clinic'] }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="summary.lastVisit" class="last-visit">
+              <small>Last visit: {{ formatDate(summary.lastVisit) }}</small>
+            </div>
+          </div>
+          
+          <button class="btn btn-small btn-primary" (click)="onViewPatientVisits(summary.patient._id!)">
+            View Visits
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patients with No Visits -->
+    <div *ngIf="getPatientsWithNoVisits().length > 0" class="section">
+      <h2>Patients with No Visits</h2>
+      <div class="no-visits-list">
+        <div *ngFor="let summary of getPatientsWithNoVisits()" class="no-visit-patient">
+          <div class="patient-avatar">
+            {{ summary.patient.firstName.charAt(0) }}{{ summary.patient.lastName.charAt(0) }}
+          </div>
+          <div class="patient-details">
+            <h4>{{ summary.patient.firstName }} {{ summary.patient.lastName }}</h4>
+            <p>{{ summary.patient.email }}</p>
+          </div>
+          <button class="btn btn-small btn-outline" (click)="onViewPatientVisits(summary.patient._id!)">
+            Add Visit
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="patientSummaries.length === 0" class="empty-state">
+      <div class="empty-icon">📊</div>
+      <h3>No data available</h3>
+      <p>Add some patients and visits to see summary statistics.</p>
+      <button class="btn btn-primary" (click)="onBackToPatients()">Go to Patients</button>
+    </div>
+  </div>
+</div> 

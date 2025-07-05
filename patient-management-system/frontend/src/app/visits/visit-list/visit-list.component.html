@@ -1,0 +1,89 @@
+<div class="visit-list-container">
+  <div class="header">
+    <div class="header-left">
+      <button class="btn btn-outline" (click)="onBackToPatients()">
+        ← Back to Patients
+      </button>
+      <h1>Patient Visits</h1>
+    </div>
+    <button class="btn btn-primary" (click)="onAddVisit()">
+      <span class="icon">+</span>
+      Add New Visit
+    </button>
+  </div>
+
+  <!-- Patient Info -->
+  <div *ngIf="patient" class="patient-info">
+    <div class="patient-card">
+      <div class="patient-avatar">
+        {{ patient.firstName.charAt(0) }}{{ patient.lastName.charAt(0) }}
+      </div>
+      <div class="patient-details">
+        <h2>{{ patient.firstName }} {{ patient.lastName }}</h2>
+        <p class="patient-email">{{ patient.email }}</p>
+        <p class="patient-phone">{{ patient.phoneNumber }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading visits...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button class="btn btn-secondary" (click)="loadVisits(patient!._id!)">Retry</button>
+  </div>
+
+  <!-- Visits List -->
+  <div *ngIf="!loading && !error" class="visits-container">
+    <div *ngIf="visits.length === 0" class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>No visits yet</h3>
+      <p>This patient hasn't had any visits recorded yet.</p>
+      <button class="btn btn-primary" (click)="onAddVisit()">Add First Visit</button>
+    </div>
+
+    <div *ngIf="visits.length > 0" class="visits-list">
+      <div *ngFor="let visit of visits" class="visit-card">
+        <div class="visit-header">
+          <div class="visit-type">
+            <span class="visit-type-badge" [class]="getVisitTypeClass(visit.visitType)">
+              {{ getVisitTypeLabel(visit.visitType) }}
+            </span>
+          </div>
+          <div class="visit-actions">
+            <button class="btn btn-small btn-secondary" (click)="onEditVisit(visit)">
+              Edit
+            </button>
+            <button class="btn btn-small btn-danger" (click)="onDeleteVisit(visit)">
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="visit-content">
+          <div class="visit-date">
+            <strong>Date:</strong> {{ formatDate(visit.visitDate) }}
+            <span class="visit-time">{{ formatTime(visit.visitDate) }}</span>
+          </div>
+          
+          <div *ngIf="visit.notes" class="visit-notes">
+            <strong>Notes:</strong>
+            <p>{{ visit.notes }}</p>
+          </div>
+
+          <div class="visit-meta">
+            <small>Created: {{ formatDate(visit.dateCreated!) }}</small>
+            <small *ngIf="visit.dateUpdated && visit.dateUpdated !== visit.dateCreated">
+              Updated: {{ formatDate(visit.dateUpdated) }}
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

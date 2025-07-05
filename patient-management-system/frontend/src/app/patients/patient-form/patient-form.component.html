@@ -1,0 +1,126 @@
+<div class="patient-form-container">
+  <div class="header">
+    <h1>{{ isEditMode ? 'Edit Patient' : 'Add New Patient' }}</h1>
+    <a routerLink="/patients" class="btn btn-outline">← Back to Patients</a>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading patient data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Patient Form -->
+  <form *ngIf="!loading" [formGroup]="patientForm" (ngSubmit)="onSubmit()" class="patient-form">
+    <div class="form-row">
+      <div class="form-group">
+        <label for="firstName">First Name *</label>
+        <input 
+          type="text" 
+          id="firstName"
+          formControlName="firstName"
+          [class.invalid]="isFieldInvalid('firstName')"
+          placeholder="Enter first name"
+        >
+        <div *ngIf="getFieldError('firstName')" class="error-text">
+          {{ getFieldError('firstName') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name *</label>
+        <input 
+          type="text" 
+          id="lastName"
+          formControlName="lastName"
+          [class.invalid]="isFieldInvalid('lastName')"
+          placeholder="Enter last name"
+        >
+        <div *ngIf="getFieldError('lastName')" class="error-text">
+          {{ getFieldError('lastName') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="dob">Date of Birth *</label>
+        <input 
+          type="date" 
+          id="dob"
+          formControlName="dob"
+          [class.invalid]="isFieldInvalid('dob')"
+        >
+        <div *ngIf="getFieldError('dob')" class="error-text">
+          {{ getFieldError('dob') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email"
+          formControlName="email"
+          [class.invalid]="isFieldInvalid('email')"
+          placeholder="Enter email address"
+        >
+        <div *ngIf="getFieldError('email')" class="error-text">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number *</label>
+      <input 
+        type="tel" 
+        id="phoneNumber"
+        formControlName="phoneNumber"
+        [class.invalid]="isFieldInvalid('phoneNumber')"
+        placeholder="Enter phone number"
+      >
+      <div *ngIf="getFieldError('phoneNumber')" class="error-text">
+        {{ getFieldError('phoneNumber') }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="address">Address *</label>
+      <textarea 
+        id="address"
+        formControlName="address"
+        [class.invalid]="isFieldInvalid('address')"
+        placeholder="Enter full address"
+        rows="3"
+      ></textarea>
+      <div *ngIf="getFieldError('address')" class="error-text">
+        {{ getFieldError('address') }}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button 
+        type="button" 
+        class="btn btn-secondary" 
+        (click)="onCancel()"
+        [disabled]="saving"
+      >
+        Cancel
+      </button>
+      <button 
+        type="submit" 
+        class="btn btn-primary" 
+        [disabled]="patientForm.invalid || saving"
+      >
+        <span *ngIf="saving" class="spinner-small"></span>
+        {{ saving ? 'Saving...' : (isEditMode ? 'Update Patient' : 'Create Patient') }}
+      </button>
+    </div>
+  </form>
+</div> 
