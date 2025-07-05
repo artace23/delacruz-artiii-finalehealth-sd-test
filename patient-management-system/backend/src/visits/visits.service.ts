@@ -11,12 +11,16 @@ export class VisitsService {
     @InjectModel(Visit.name) private visitModel: Model<VisitDocument>,
   ) {}
 
-  async create(createVisitDto: CreateVisitDto): Promise<Visit> {
+  async create(createVisitDto: CreateVisitDto & { patientId: string }): Promise<Visit> {
+    console.log('Service creating visit with:', createVisitDto);
     const createdVisit = new this.visitModel({
       ...createVisitDto,
       patientId: new Types.ObjectId(createVisitDto.patientId),
     });
-    return createdVisit.save();
+    console.log('Visit model before save:', createdVisit);
+    const savedVisit = await createdVisit.save();
+    console.log('Visit saved successfully:', savedVisit);
+    return savedVisit;
   }
 
   async findOne(id: string): Promise<Visit> {
@@ -26,7 +30,10 @@ export class VisitsService {
   }
 
   async findByPatient(patientId: string): Promise<Visit[]> {
-    return this.visitModel.find({ patientId }).exec();
+    console.log('Finding visits for patient:', patientId);
+    const visits = await this.visitModel.find({ patientId: new Types.ObjectId(patientId) }).exec();
+    console.log('Found visits:', visits);
+    return visits;
   }
 
   async update(id: string, updateVisitDto: UpdateVisitDto): Promise<Visit> {

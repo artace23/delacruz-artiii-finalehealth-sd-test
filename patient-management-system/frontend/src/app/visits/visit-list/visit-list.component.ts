@@ -6,6 +6,7 @@ import { VisitService } from '../../services/visit.service';
 import { PatientService } from '../../services/patient.service';
 import { Visit, VisitType } from '../../models/visit.model';
 import { Patient } from '../../models/patient.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-visit-list',
@@ -29,11 +30,14 @@ export class VisitListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    const patientId = this.route.snapshot.paramMap.get('id');
-    if (patientId) {
-      this.loadPatient(patientId);
-      this.loadVisits(patientId);
-    }
+    // Subscribe to route changes to refresh data when navigating back
+    this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe(params => {
+      const patientId = params.get('id');
+      if (patientId) {
+        this.loadPatient(patientId);
+        this.loadVisits(patientId);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -90,19 +94,30 @@ export class VisitListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteVisit(visit: Visit): void {
-    if (confirm(`Are you sure you want to delete this visit?`)) {
-      this.visitService.deleteVisit(visit._id!)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            this.loadVisits(this.patient!._id!);
-          },
-          error: (error) => {
-            this.error = 'Failed to delete visit. Please try again.';
-            console.error('Error deleting visit:', error);
-          }
-        });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this visit?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.visitService.deleteVisit(visit._id!)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              Swal.fire('Deleted!', 'The visit has been deleted.', 'success');
+              this.loadVisits(this.patient!._id!);
+            },
+            error: (error) => {
+              Swal.fire('Error', 'Failed to delete visit. Please try again.', 'error');
+              this.error = 'Failed to delete visit. Please try again.';
+              console.error('Error deleting visit:', error);
+            }
+          });
+      }
+    });
   }
 
   onBackToPatients(): void {

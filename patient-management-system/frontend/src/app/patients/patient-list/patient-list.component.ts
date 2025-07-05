@@ -5,6 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { PatientService } from '../../services/patient.service';
 import { Patient } from '../../models/patient.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-patient-list',
@@ -107,19 +108,30 @@ export class PatientListComponent implements OnInit, OnDestroy {
   }
 
   onDeletePatient(patient: Patient): void {
-    if (confirm(`Are you sure you want to delete ${patient.firstName} ${patient.lastName}?`)) {
-      this.patientService.deletePatient(patient._id!)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: () => {
-            this.loadPatients();
-          },
-          error: (error) => {
-            this.error = 'Failed to delete patient. Please try again.';
-            console.error('Error deleting patient:', error);
-          }
-        });
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to delete ${patient.firstName} ${patient.lastName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.patientService.deletePatient(patient._id!)
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: () => {
+              Swal.fire('Deleted!', 'The patient has been deleted.', 'success');
+              this.loadPatients();
+            },
+            error: (error) => {
+              Swal.fire('Error', 'Failed to delete patient. Please try again.', 'error');
+              this.error = 'Failed to delete patient. Please try again.';
+              console.error('Error deleting patient:', error);
+            }
+          });
+      }
+    });
   }
 
   onAddPatient(): void {

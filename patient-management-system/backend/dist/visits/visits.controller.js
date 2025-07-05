@@ -23,9 +23,11 @@ let VisitsController = class VisitsController {
         this.visitsService = visitsService;
     }
     create(patientId, createVisitDto) {
+        console.log('Creating visit with data:', { patientId, createVisitDto });
         return this.visitsService.create({ ...createVisitDto, patientId });
     }
     findByPatient(patientId) {
+        console.log('Controller finding visits for patient:', patientId);
         return this.visitsService.findByPatient(patientId);
     }
 };

@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { PatientService } from '../../services/patient.service';
 import { Patient, CreatePatientDto, UpdatePatientDto } from '../../models/patient.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-patient-form',
@@ -125,11 +126,13 @@ export class PatientFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (newPatient) => {
           this.saving = false;
+          Swal.fire('Success', 'Patient created successfully!', 'success');
           this.router.navigate(['/patients']);
         },
         error: (error) => {
           this.error = 'Failed to create patient. Please try again.';
           this.saving = false;
+          Swal.fire('Error', 'Failed to create patient. Please try again.', 'error');
           console.error('Error creating patient:', error);
         }
       });
@@ -141,11 +144,13 @@ export class PatientFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (updatedPatient) => {
           this.saving = false;
+          Swal.fire('Success', 'Patient updated successfully!', 'success');
           this.router.navigate(['/patients']);
         },
         error: (error) => {
           this.error = 'Failed to update patient. Please try again.';
           this.saving = false;
+          Swal.fire('Error', 'Failed to update patient. Please try again.', 'error');
           console.error('Error updating patient:', error);
         }
       });

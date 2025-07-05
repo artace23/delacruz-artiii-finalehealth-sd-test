@@ -10,11 +10,13 @@ export class VisitsController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   create(@Param('patientId') patientId: string, @Body() createVisitDto: CreateVisitDto) {
+    console.log('Creating visit with data:', { patientId, createVisitDto });
     return this.visitsService.create({ ...createVisitDto, patientId });
   }
 
   @Get()
   findByPatient(@Param('patientId') patientId: string) {
+    console.log('Controller finding visits for patient:', patientId);
     return this.visitsService.findByPatient(patientId);
   }
 }

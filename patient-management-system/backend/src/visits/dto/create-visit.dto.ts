@@ -3,10 +3,6 @@ import { VisitType } from '../schemas/visit.schema';
 
 export class CreateVisitDto {
   @IsNotEmpty()
-  @IsString()
-  patientId: string;
-
-  @IsNotEmpty()
   @IsDateString()
   visitDate: string;
 

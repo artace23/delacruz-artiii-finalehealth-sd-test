@@ -53,13 +53,20 @@ export class VisitFormComponent implements OnInit, OnDestroy {
   }
 
   private checkEditMode(): void {
-    const visitId = this.route.snapshot.paramMap.get('id');
-    if (visitId) {
+    // Check if we're in edit mode by looking at the URL path
+    const url = this.router.url;
+    
+    if (url.includes('/visits/') && url.includes('/edit')) {
+      // We're editing an existing visit
       this.isEditMode = true;
-      this.loadVisit(visitId);
+      const visitId = this.route.snapshot.paramMap.get('id');
+      if (visitId) {
+        this.loadVisit(visitId);
+      }
     } else {
-      // Creating new visit - get patient ID from route
-      const patientId = this.route.snapshot.paramMap.get('patientId');
+      // We're creating a new visit
+      this.isEditMode = false;
+      const patientId = this.route.snapshot.paramMap.get('id'); // This is the patient ID from patients/:id/visits/new
       if (patientId) {
         this.loadPatient(patientId);
       }
@@ -126,7 +133,7 @@ export class VisitFormComponent implements OnInit, OnDestroy {
 
       const formValue = this.visitForm.value;
       const visitData: CreateVisitDto | UpdateVisitDto = {
-        visitDate: formValue.visitDate,
+        visitDate: new Date(formValue.visitDate).toISOString(),
         visitType: formValue.visitType,
         notes: formValue.notes || undefined
       };
@@ -142,10 +149,12 @@ export class VisitFormComponent implements OnInit, OnDestroy {
   }
 
   private createVisit(patientId: string, visitData: CreateVisitDto): void {
+    console.log('Frontend sending visit data:', { patientId, visitData });
     this.visitService.createVisit(patientId, visitData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (newVisit) => {
+          console.log('Visit created successfully:', newVisit);
           this.saving = false;
           this.router.navigate(['/patients', patientId, 'visits']);
         },

@@ -15,7 +15,6 @@ export interface Visit {
 }
 
 export interface CreateVisitDto {
-  patientId: string;
   visitDate: string;
   notes?: string;
   visitType: VisitType;

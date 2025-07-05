@@ -13,17 +13,11 @@ exports.CreateVisitDto = void 0;
 const class_validator_1 = require("class-validator");
 const visit_schema_1 = require("../schemas/visit.schema");
 class CreateVisitDto {
-    patientId;
     visitDate;
     notes;
     visitType;
 }
 exports.CreateVisitDto = CreateVisitDto;
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateVisitDto.prototype, "patientId", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsDateString)(),

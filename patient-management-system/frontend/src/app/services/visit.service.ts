@@ -16,16 +16,23 @@ export class VisitService {
 
   // Get visits by patient ID
   getVisitsByPatient(patientId: string): Observable<Visit[]> {
+    console.log('Fetching visits for patient:', patientId);
     return this.http.get<Visit[]>(`${this.apiUrl}/patients/${patientId}/visits`).pipe(
-      tap(visits => this.visitsSubject.next(visits)),
+      tap(visits => {
+        console.log('Received visits from backend:', visits);
+        this.visitsSubject.next(visits);
+      }),
       catchError(this.handleError)
     );
   }
 
   // Create new visit
   createVisit(patientId: string, visit: CreateVisitDto): Observable<Visit> {
+    console.log('Visit service sending request to:', `${this.apiUrl}/patients/${patientId}/visits`);
+    console.log('Visit service sending data:', visit);
     return this.http.post<Visit>(`${this.apiUrl}/patients/${patientId}/visits`, visit).pipe(
       tap(newVisit => {
+        console.log('Visit service received response:', newVisit);
         const currentVisits = this.visitsSubject.value;
         this.visitsSubject.next([...currentVisits, newVisit]);
       }),

@@ -5,7 +5,9 @@ import { UpdateVisitDto } from './dto/update-visit.dto';
 export declare class VisitsService {
     private visitModel;
     constructor(visitModel: Model<VisitDocument>);
-    create(createVisitDto: CreateVisitDto): Promise<Visit>;
+    create(createVisitDto: CreateVisitDto & {
+        patientId: string;
+    }): Promise<Visit>;
     findOne(id: string): Promise<Visit>;
     findByPatient(patientId: string): Promise<Visit[]>;
     update(id: string, updateVisitDto: UpdateVisitDto): Promise<Visit>;

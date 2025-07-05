@@ -18,7 +18,7 @@ exports.VisitsModule = VisitsModule;
 exports.VisitsModule = VisitsModule = __decorate([
     (0, common_1.Module)({
         imports: [mongoose_1.MongooseModule.forFeature([{ name: visit_schema_1.Visit.name, schema: visit_schema_1.VisitSchema }])],
-        controllers: [visits_controller_1.VisitsController],
+        controllers: [visits_controller_1.VisitsController, visits_controller_1.VisitActionsController],
         providers: [visits_service_1.VisitsService],
         exports: [visits_service_1.VisitsService],
     })

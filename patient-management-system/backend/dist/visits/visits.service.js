@@ -23,11 +23,15 @@ let VisitsService = class VisitsService {
         this.visitModel = visitModel;
     }
     async create(createVisitDto) {
+        console.log('Service creating visit with:', createVisitDto);
         const createdVisit = new this.visitModel({
             ...createVisitDto,
             patientId: new mongoose_2.Types.ObjectId(createVisitDto.patientId),
         });
-        return createdVisit.save();
+        console.log('Visit model before save:', createdVisit);
+        const savedVisit = await createdVisit.save();
+        console.log('Visit saved successfully:', savedVisit);
+        return savedVisit;
     }
     async findOne(id) {
         const visit = await this.visitModel.findById(id).exec();
@@ -36,7 +40,10 @@ let VisitsService = class VisitsService {
         return visit;
     }
     async findByPatient(patientId) {
-        return this.visitModel.find({ patientId }).exec();
+        console.log('Finding visits for patient:', patientId);
+        const visits = await this.visitModel.find({ patientId: new mongoose_2.Types.ObjectId(patientId) }).exec();
+        console.log('Found visits:', visits);
+        return visits;
     }
     async update(id, updateVisitDto) {
         const updated = await this.visitModel.findByIdAndUpdate(id, updateVisitDto, { new: true }).exec();
