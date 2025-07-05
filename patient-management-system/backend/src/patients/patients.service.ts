@@ -20,6 +20,19 @@ export class PatientsService {
     return this.patientModel.find().exec();
   }
 
+  async search(query: string): Promise<Patient[]> {
+    const regex = new RegExp(query, 'i'); // case-insensitive search
+    return this.patientModel.find({
+      $expr: {
+        $regexMatch: {
+          input: { $concat: ["$firstName", " ", "$lastName"] },
+          regex: query,
+          options: "i"
+        }
+      }
+    }).exec();
+  }
+
   async findOne(id: string): Promise<Patient> {
     const patient = await this.patientModel.findById(id).exec();
     if (!patient) throw new NotFoundException('Patient not found');

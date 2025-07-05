@@ -25,7 +25,10 @@ let PatientsController = class PatientsController {
     create(createPatientDto) {
         return this.patientsService.create(createPatientDto);
     }
-    findAll() {
+    findAll(search) {
+        if (search && search.trim()) {
+            return this.patientsService.search(search.trim());
+        }
         return this.patientsService.findAll();
     }
     findOne(id) {
@@ -49,8 +52,9 @@ __decorate([
 ], PatientsController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)('search')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], PatientsController.prototype, "findAll", null);
 __decorate([

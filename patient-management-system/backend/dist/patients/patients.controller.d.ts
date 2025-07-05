@@ -5,7 +5,7 @@ export declare class PatientsController {
     private readonly patientsService;
     constructor(patientsService: PatientsService);
     create(createPatientDto: CreatePatientDto): Promise<import("./schemas/patient.schema").Patient>;
-    findAll(): Promise<import("./schemas/patient.schema").Patient[]>;
+    findAll(search?: string): Promise<import("./schemas/patient.schema").Patient[]>;
     findOne(id: string): Promise<import("./schemas/patient.schema").Patient>;
     update(id: string, updatePatientDto: UpdatePatientDto): Promise<import("./schemas/patient.schema").Patient>;
     remove(id: string): Promise<void>;

@@ -7,6 +7,7 @@ export declare class PatientsService {
     constructor(patientModel: Model<PatientDocument>);
     create(createPatientDto: CreatePatientDto): Promise<Patient>;
     findAll(): Promise<Patient[]>;
+    search(query: string): Promise<Patient[]>;
     findOne(id: string): Promise<Patient>;
     update(id: string, updatePatientDto: UpdatePatientDto): Promise<Patient>;
     remove(id: string): Promise<void>;

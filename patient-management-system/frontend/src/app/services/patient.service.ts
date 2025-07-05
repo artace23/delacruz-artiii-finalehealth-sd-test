@@ -68,16 +68,9 @@ export class PatientService {
 
   // Search patients by name or email
   searchPatients(query: string): Observable<Patient[]> {
-    const currentPatients = this.patientsSubject.value;
-    const filteredPatients = currentPatients.filter(patient =>
-      patient.firstName.toLowerCase().includes(query.toLowerCase()) ||
-      patient.lastName.toLowerCase().includes(query.toLowerCase()) ||
-      patient.email.toLowerCase().includes(query.toLowerCase())
+    return this.http.get<Patient[]>(`${this.apiUrl}?search=${encodeURIComponent(query)}`).pipe(
+      catchError(this.handleError)
     );
-    return new Observable(observer => {
-      observer.next(filteredPatients);
-      observer.complete();
-    });
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -29,6 +29,18 @@ let PatientsService = class PatientsService {
     async findAll() {
         return this.patientModel.find().exec();
     }
+    async search(query) {
+        const regex = new RegExp(query, 'i');
+        return this.patientModel.find({
+            $expr: {
+                $regexMatch: {
+                    input: { $concat: ["$firstName", " ", "$lastName"] },
+                    regex: query,
+                    options: "i"
+                }
+            }
+        }).exec();
+    }
     async findOne(id) {
         const patient = await this.patientModel.findById(id).exec();
         if (!patient)

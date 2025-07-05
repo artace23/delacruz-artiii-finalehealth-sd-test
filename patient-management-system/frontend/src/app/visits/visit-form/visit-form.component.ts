@@ -7,6 +7,7 @@ import { VisitService } from '../../services/visit.service';
 import { PatientService } from '../../services/patient.service';
 import { Visit, CreateVisitDto, UpdateVisitDto, VisitType } from '../../models/visit.model';
 import { Patient } from '../../models/patient.model';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-visit-form',
@@ -156,11 +157,13 @@ export class VisitFormComponent implements OnInit, OnDestroy {
         next: (newVisit) => {
           console.log('Visit created successfully:', newVisit);
           this.saving = false;
+          Swal.fire('Success', 'Visit created successfully!', 'success');
           this.router.navigate(['/patients', patientId, 'visits']);
         },
         error: (error) => {
           this.error = 'Failed to create visit. Please try again.';
           this.saving = false;
+          Swal.fire('Error', 'Failed to create visit. Please try again.', 'error');
           console.error('Error creating visit:', error);
         }
       });
@@ -172,11 +175,13 @@ export class VisitFormComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (updatedVisit) => {
           this.saving = false;
+          Swal.fire('Success', 'Visit updated successfully!', 'success');
           this.router.navigate(['/patients', updatedVisit.patientId, 'visits']);
         },
         error: (error) => {
           this.error = 'Failed to update visit. Please try again.';
           this.saving = false;
+          Swal.fire('Error', 'Failed to update visit. Please try again.', 'error');
           console.error('Error updating visit:', error);
         }
       });

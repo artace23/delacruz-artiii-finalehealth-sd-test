@@ -69,8 +69,9 @@ export class PatientListComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe(searchTerm => {
-        if (searchTerm) {
-          this.patientService.searchPatients(searchTerm)
+        const trimmedSearch = searchTerm?.trim();
+        if (trimmedSearch) {
+          this.patientService.searchPatients(trimmedSearch)
             .pipe(takeUntil(this.destroy$))
             .subscribe(patients => {
               this.filteredPatients = patients;
@@ -147,6 +148,12 @@ export class PatientListComponent implements OnInit, OnDestroy {
   }
 
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString();
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    };
+    return date.toLocaleDateString('en-US', options);
   }
 } 

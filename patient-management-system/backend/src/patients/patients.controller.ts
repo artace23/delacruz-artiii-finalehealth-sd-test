@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UsePipes, ValidationPipe, Query } from '@nestjs/common';
 import { PatientsService } from './patients.service';
 import { CreatePatientDto } from './dto/create-patient.dto';
 import { UpdatePatientDto } from './dto/update-patient.dto';
@@ -14,7 +14,10 @@ export class PatientsController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('search') search?: string) {
+    if (search && search.trim()) {
+      return this.patientsService.search(search.trim());
+    }
     return this.patientsService.findAll();
   }
 
